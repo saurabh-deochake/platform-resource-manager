@@ -1,0 +1,9 @@
+CID,CNAME,TYPE,CPUS
+,cassandra_workload,LC,10
+,django_workload,LC,8
+,memcache_workload_1,LC,2
+,memcache_workload_2,LC,2
+,memcache_workload_3,LC,2
+,stress-ng,BE,2
+,tensorflow_training,BE,1
+,tensorflow_prediction,BE,1

@@ -1,0 +1,8 @@
+pgos/pgos
+eris/pgos
+eris/__pycache__/
+eris/lcmax.txt
+eris/metrics.csv
+eris/util.csv
+eris/tdp_thresh.csv
+eris/thresh.csv
