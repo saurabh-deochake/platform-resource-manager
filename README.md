@@ -4,7 +4,7 @@ Platform Resource Manager is a suite of software package to help cluster owner t
 
 ## Requirements
 
- - Python 3
+ - Python 3.6.x
  - Python lib: numpy, pandas, scipy, scikit-learn, docker, prometheus-client
  - Golang compiler
  - gcc
@@ -23,8 +23,8 @@ Assuming all requirements are installed and configured properly, following steps
 
 **Build Platform Resource Manager**
 
-     git clone https://github.com/otcshare/PlatformResourceManager
-     cd PlatformResourceManager
+     git clone https://github.com/intel/platform-resource-manager
+     cd platform-resource-manager
      ./setup.sh
      cd eris
 
