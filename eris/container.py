@@ -42,7 +42,7 @@ class Container:
     """
 
     def __init__(self, cid, cn, pids, verbose, thresh=[], tdp_thresh=[],
-                 historyDepth=5):
+                 history_depth=5):
         self.cid = cid
         self.name = cn
         self.pids = pids
@@ -53,8 +53,8 @@ class Container:
         self.tdp_thresh = tdp_thresh
         self.verbose = verbose
         self.metrics = dict()
-        self.historyDepth = historyDepth + 1
-        self.metricsHistory = deque([], self.historyDepth)
+        self.history_depth = history_depth + 1
+        self.metrics_history = deque([], self.history_depth)
         self.cpusets = []
 
     '''
@@ -63,34 +63,34 @@ class Container:
     self.historyDepth if histroy metrics data length exceeds the
     self.historyDepth, the oldest data will be erased
     '''
-    def updateMetricsHistory(self):
-        self.metricsHistory.append(self.metrics.copy())
+    def update_metrics_history(self):
+        self.metrics_history.append(self.metrics.copy())
 
-    def getHistoryDeltaByType(self, columnname):
-        length = len(self.metricsHistory)
+    def get_history_delta_by_Type(self, columnname):
+        length = len(self.metrics_history)
         if length == 0:
             return 0
 
         if length == 1:
-            return self.metricsHistory[length - 1][columnname]
+            return self.metrics_history[length - 1][columnname]
 
         data_sum = 0
 
         for x in range(length - 1):
-            data_sum = data_sum + self.metricsHistory[x][columnname]
+            data_sum = data_sum + self.metrics_history[x][columnname]
 
-        data_delta = self.metricsHistory[length - 1][columnname] -\
+        data_delta = self.metrics_history[length - 1][columnname] -\
             data_sum / (length - 1)
 
         return data_delta
 
-    def getLLCOccupanyDelta(self):
-        return self.getHistoryDeltaByType('L3OCC')
+    def get_llcoccupany_delta(self):
+        return self.get_history_delta_by_Type('L3OCC')
 
-    def getFreqDelta(self):
-        return self.getHistoryDeltaByType('NF')
+    def get_freq_delta(self):
+        return self.get_history_delta_by_Type('NF')
 
-    def getLatestMBT(self):
+    def get_latest_mbt(self):
         return self.metrics['MBL'] + self.metrics['MBR']
 
     def get_metrics(self):

@@ -117,7 +117,7 @@ def set_metrics(ctx, data):
                                         ctx.args.metric_interval /
                                         10000 / con.utils)
                 if ctx.args.detect:
-                    con.updateMetricsHistory()
+                    con.update_metrics_history()
 
                 if ctx.args.record:
                     with open('./metrics.csv', 'a') as metricf:
@@ -167,11 +167,11 @@ def set_metrics(ctx, data):
                         if cid == container_contended.cid:
                             continue
                         if contention_type == Contention.LLC:
-                            delta = container.getLLCOccupanyDelta()
+                            delta = container.get_llcoccupany_delta()
                         elif contention_type == Contention.MB:
-                            delta = container.getLatestMBT()
+                            delta = container.get_latest_mbt()
                         elif contention_type == Contention.TDP:
-                            delta = container.getFreqDelta()
+                            delta = container.get_freq_delta()
 
                         if delta > 0 and delta > resource_delta_max:
                             resource_delta_max = delta
