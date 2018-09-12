@@ -168,7 +168,7 @@ def set_metrics(ctx, data):
                             continue
                         if contention_type == Contention.LLC:
                             delta = container.get_llcoccupany_delta()
-                        elif contention_type == Contention.MB:
+                        elif contention_type == Contention.MEM_BW:
                             delta = container.get_latest_mbt()
                         elif contention_type == Contention.TDP:
                             delta = container.get_freq_delta()
