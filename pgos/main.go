@@ -20,7 +20,7 @@ package main
 // #include <stdint.h>
 // #include <sys/types.h>
 // #include <linux/perf_event.h>
-// #cgo LDFLAGS: -lpqos
+// #cgo LDFLAGS: -lpqos -lm
 // #include <pqos.h>
 // #include "perf.c"
 // #include "pgos.c"

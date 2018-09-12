@@ -19,11 +19,20 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
 #include <sys/ioctl.h>
 #include <linux/perf_event.h>
 #include <asm/unistd.h>
 #include <stdint.h>
 #include <fcntl.h>
+
+
+struct read_format {
+    uint64_t value;         /* The value of the event */
+    uint64_t time_enabled;  /* if PERF_FORMAT_TOTAL_TIME_ENABLED */
+    uint64_t time_running;  /* if PERF_FORMAT_TOTAL_TIME_RUNNING */
+    uint64_t id;            /* if PERF_FORMAT_ID */
+};
 
 
 static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags)
@@ -40,13 +49,29 @@ static int open_perf_fd(pid_t pid, int cpu, uint64_t metric) {
     pe.size = sizeof(struct perf_event_attr);
     pe.config = metric;
     pe.disabled = 1;
+    pe.read_format = PERF_FORMAT_TOTAL_TIME_ENABLED |
+	 	 	PERF_FORMAT_TOTAL_TIME_RUNNING |
+	   		PERF_FORMAT_ID; 
 
     int fd = perf_event_open(&pe, pid, cpu, -1, PERF_FLAG_PID_CGROUP);
     return fd;
 }
 
+static uint64_t scale_counter_value(struct read_format rf) {
+    double scaling_rate;
+    if (rf.time_running == 0 || rf.time_enabled == 0)
+    	return 0;	    
+
+    if (rf.time_enabled != rf.time_running) {
+    	scaling_rate = rf.time_enabled / rf.time_running;
+	return round(rf.value * scaling_rate);
+    } else {
+	return rf.value;
+    }
+}
+
 static void collect(pid_t* pids, int pid_count, int cpus, uint64_t* metrics, int metrics_count, uint64_t* result, unsigned period)  {
-    int64_t count = 0; 
+    struct read_format rf; 
     int i, j, k;
     int fds[10000], fd_index = 0, result_index = 0;
     for (i = 0;i < pid_count;i ++) {
@@ -74,13 +99,13 @@ static void collect(pid_t* pids, int pid_count, int cpus, uint64_t* metrics, int
         for (j = 0;j < metrics_count;j ++) {
             for (k = 0;k < cpus;k ++) {
                 ioctl(fds[fd_index], PERF_EVENT_IOC_DISABLE, 0);
-                int n = read(fds[fd_index], &count, sizeof(int64_t));
+                int n = read(fds[fd_index], &rf, sizeof(struct read_format));
                 if (n == -1) {
                     continue;
                 }
                 close(fds[fd_index]);
                 fd_index ++;
-                result[result_index] += count;
+                result[result_index] += scale_counter_value(rf);
             }
             result_index ++;
         }
