@@ -1,6 +1,6 @@
 # Platform Resource Manager
 
-Platform Resource Manager is a suite of software package to help cluster owner to safely colocate best-efforts jobs with latency-critical jobs in a cluster. It provides an analyze tool to build model for platform resource contention detection. Also it provides an agent to monitor and control platform resources (CPU Cycle, Last Level Cache, Memory Bandwidth, etc.. ) in a node.    
+Platform Resource Manager is a suite of software package to help cluster owner to safely co-locate best-efforts jobs with latency-critical jobs in a cluster. It provides an analyze tool to build model for platform resource contention detection. Also it provides an agent to monitor and control platform resources (CPU Cycle, Last Level Cache, Memory Bandwidth, etc.. ) in a node.    
 
 ## Requirements
 
