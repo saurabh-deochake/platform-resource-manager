@@ -25,6 +25,7 @@
 #include <asm/unistd.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <errno.h>
 
 
 struct read_format {
@@ -79,7 +80,7 @@ static void collect(pid_t* pids, int pid_count, int cpus, uint64_t* metrics, int
             for (k = 0;k < cpus;k ++) {
                 fds[fd_index] = open_perf_fd(pids[i], k, metrics[j]);
                 if (fds[fd_index] == -1) {
-                    printf("fail to open perf event\n");
+                    printf("fail to open perf event, error %s \n", strerror(errno));
                     fflush(stdout);
                     return;
                 }
