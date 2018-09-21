@@ -324,12 +324,15 @@ def mon_metric_cycle(ctx):
         ctx.llc.budgeting(new_bes)
 
     if cgps:
+        period = str(ctx.args.metric_interval - 2)
         result = subprocess.run(['./pgos', '-cgroup', ','.join(cgps),
-                                 '-period', '18', '-frequency', '18',
+                                 '-period', period, '-frequency', period,
                                  '-cycle', '1', '-core', str(os.cpu_count())],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
         data = result.stdout.decode('utf-8').splitlines()
+        if ctx.args.verbose:
+            print(result.stdout.decode('utf-8'))
         set_metrics(ctx, data)
 
 
@@ -506,9 +509,10 @@ def parse_arguments():
     parser.add_argument('-p', '--enable_prometheus', help='allow eris send\
                         metrics to prometheus', action='store_true')
     parser.add_argument('-u', '--util-interval', help='CPU utilization monitor\
-                        interval', type=int, default=2)
+                        interval', type=int, choices=range(1, 10), default=2)
     parser.add_argument('-m', '--metric-interval', help='platform metrics\
-                        monitor interval', type=int, default=20)
+                        monitor interval', type=int, choices=range(5, 60),
+                        default=20)
     parser.add_argument('-l', '--llc-cycles', help='cycle number in LLC\
                         controller', type=int, default=6)
     parser.add_argument('-q', '--quota-cycles', help='cycle number in CPU CFS\
